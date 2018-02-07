@@ -1,16 +1,18 @@
 var express = require('express');
-
 var bcryptjs = require('bcryptjs');
-
-var app = express();
+var jwt = require('jsonwebtoken');
 
 var Usuario = require('../models/usuario');
+//var SEED = require('../config/config').SEED;
 
+var mdAutentificacion = require('../middlewares/autenticacion');
+
+var app = express();
 
 //==============================
 // Get todos los Usuarios
 //==============================
-app.get('/', (req, res, next ) =>{
+app.get('/', mdAutentificacion.verificarToken , (req, res, next ) =>{
 
     Usuario.find({}, 'nombre email img role')
         .exec(
@@ -39,7 +41,7 @@ app.get('/', (req, res, next ) =>{
 //Crear un nuevo Usuario
 //==============================
 
-app.post('/', (req, res) =>{
+app.post('/', mdAutentificacion.verificarToken , (req, res) =>{
 
     var body = req.body;
 
@@ -64,7 +66,8 @@ app.post('/', (req, res) =>{
         res.status(200).json({
             ok: true,
             mensaje: 'Usuario creado correctamente',
-            usuario: userSave
+            usuario: userSave,
+            usuarioToken: req.usuario
         });
 
 
@@ -77,7 +80,7 @@ app.post('/', (req, res) =>{
 //Actualizar un nuevo Usuario
 //==============================
 
-app.put('/:id', (req, res ) => {
+app.put('/:id', mdAutentificacion.verificarToken , (req, res ) => {
 
     var id = req.params.id;
     var body = req.body;
@@ -131,7 +134,7 @@ app.put('/:id', (req, res ) => {
 //==============================
 //Actualizar un nuevo Usuario
 //==============================
-app.delete('/:id', ( req, res) => {
+app.delete('/:id', mdAutentificacion.verificarToken , ( req, res) => {
 
     var id = req.params.id;
 

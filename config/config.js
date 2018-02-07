@@ -1,1 +1,1 @@
-module.exports.SEPP = 'backend-server-@luis-y-@maria';
+module.exports.SEED = 'backend-server-@luis-y-@maria';
